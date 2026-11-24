@@ -18,8 +18,8 @@ public class UsuarioConverter {
                 .nome(usuarioDTO.getNome())
                 .email(usuarioDTO.getEmail())
                 .senha(usuarioDTO.getSenha())
-                .enderecos(paraListarEndereco(usuarioDTO.getEnderecos()))
-                .telefones(paraListarTelefone(usuarioDTO.getTelefones()))
+                .enderecos(usuarioDTO.getEnderecos() != null ? paraListarEndereco(usuarioDTO.getEnderecos()) : null)
+                .telefones(usuarioDTO.getTelefones() != null ? paraListarTelefone(usuarioDTO.getTelefones()) : null)
                 .build();
     }
 
@@ -58,9 +58,8 @@ public class UsuarioConverter {
                 .id(usuario.getId())
                 .nome(usuario.getNome())
                 .email(usuario.getEmail())
-                .senha(usuario.getSenha())
-                .enderecos(paraListarEnderecoDTO(usuario.getEnderecos()))
-                .telefones(paraListarTelefoneDTO(usuario.getTelefones()))
+                .enderecos(usuario.getEnderecos() != null ? paraListarEnderecoDTO(usuario.getEnderecos()) : null)
+                .telefones(usuario.getTelefones() != null ? paraListarTelefoneDTO(usuario.getTelefones()) : null)
                 .build();
     }
 
@@ -116,6 +115,7 @@ public class UsuarioConverter {
                 .bairro(enderecoDTO.getBairro() != null ? enderecoDTO.getBairro() : entity.getBairro())
                 .estado(enderecoDTO.getEstado() != null ? enderecoDTO.getEstado() : entity.getEstado())
                 .cep(enderecoDTO.getCep() != null ? enderecoDTO.getCep() : entity.getCep())
+                .usuarioId(entity.getUsuarioId())
                 .build();
     }
 
@@ -124,6 +124,7 @@ public class UsuarioConverter {
                 .id(entity.getId())
                 .numero(telefoneDTO.getNumero() != null ? telefoneDTO.getNumero() : entity.getNumero())
                 .ddd(telefoneDTO.getDdd() != null ? telefoneDTO.getDdd() : entity.getDdd())
+                .usuarioId(entity.getUsuarioId())
                 .build();
     }
 
@@ -139,11 +140,11 @@ public class UsuarioConverter {
                 .build();
     }
 
-    public Telefone paraTelefoneEntity(TelefoneDTO telefoneDTO, Long idTelefone) {
+    public Telefone paraTelefoneEntity(TelefoneDTO telefoneDTO, Long idUsuario) {
         return Telefone.builder()
                 .numero(telefoneDTO.getNumero())
                 .ddd(telefoneDTO.getDdd())
-                .usuarioId(idTelefone)
+                .usuarioId(idUsuario)
                 .build();
     }
 }
