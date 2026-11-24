@@ -72,6 +72,14 @@ spring.datasource.password=SuaSenha
 spring.jpa.hibernate.ddl-auto=update
 ```
 
+Configure também `JWT_SECRET` com uma chave aleatória de pelo menos 32 bytes. Não use uma chave fixa no código nem compartilhe a chave entre ambientes. No PowerShell:
+
+```powershell
+$env:JWT_SECRET = "<chave-aleatoria-com-pelo-menos-32-bytes>"
+```
+
+No Bash, use `export JWT_SECRET="<chave-aleatoria-com-pelo-menos-32-bytes>"`.
+
 Caso o banco não exista, crie-o antes da execução:
 
 ```sql
@@ -80,7 +88,7 @@ CREATE DATABASE db_usuario;
 
 ## Como executar
 
-Na raiz do projeto, execute:
+Na pasta `usuarioCadastro`, execute:
 
 ```bash
 ./gradlew bootRun
@@ -138,7 +146,7 @@ Body exemplo:
 Resposta:
 
 ```text
-Bearer <token_jwt>
+Bearer <token>
 ```
 
 ---
@@ -160,7 +168,7 @@ PUT /usuario
 Headers:
 
 ```http
-Authorization: Bearer <token_jwt>
+Authorization: Bearer <token>
 ```
 
 Body exemplo:
@@ -198,15 +206,16 @@ POST /usuario/endereco
 Headers:
 
 ```http
-Authorization: Bearer <token_jwt>
+Authorization: Bearer <token>
 ```
 
 Body exemplo:
 
 ```json
 {
-  "logradouro": "Rua das Flores",
-  "numero": "123",
+  "rua": "Rua das Flores",
+  "numero": 123,
+  "bairro": "Centro",
   "cidade": "São Paulo",
   "estado": "SP",
   "cep": "01000-000"
@@ -225,8 +234,9 @@ Body exemplo:
 
 ```json
 {
-  "logradouro": "Avenida Paulista",
-  "numero": "1000",
+  "rua": "Avenida Paulista",
+  "numero": 1000,
+  "bairro": "Bela Vista",
   "cidade": "São Paulo",
   "estado": "SP",
   "cep": "01310-100"
@@ -244,7 +254,7 @@ POST /usuario/telefone
 Headers:
 
 ```http
-Authorization: Bearer <token_jwt>
+Authorization: Bearer <token>
 ```
 
 Body exemplo:
@@ -252,7 +262,7 @@ Body exemplo:
 ```json
 {
   "numero": "11999999999",
-  "tipo": "CELULAR"
+  "ddd": "11"
 }
 ```
 
@@ -269,16 +279,16 @@ Body exemplo:
 ```json
 {
   "numero": "11888888888",
-  "tipo": "FIXO"
+  "ddd": "11"
 }
 ```
 
 ## Segurança
 
-A API usa autenticação JWT via Spring Security. Os endpoints de cadastro e login são públicos, enquanto os demais endpoints exigem um token válido no header:
+A API usa autenticação JWT via Spring Security. Os endpoints de cadastro e login são públicos, enquanto os demais endpoints exigem um token válido no header. Consulta, atualização e exclusão são limitadas aos dados do usuário autenticado. O token deve ser enviado no formato `Authorization: Bearer <token>`.
 
 ```http
-Authorization: Bearer <token_jwt>
+Authorization: Bearer <token>
 ```
 
 ## Testes
